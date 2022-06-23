@@ -1,0 +1,5 @@
+{
+  "remove_genotypes.input_vcf": "input_vcfs.txt",
+  "remove_genotypes.manipulate_r_script": "manipulate.R"
+}
+

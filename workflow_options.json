@@ -1,0 +1,11 @@
+{
+    "final_workflow_outputs_dir": "outputs/",
+    "final_workflow_log_dir": "workflow_logs/",
+    "final_call_logs_dir": "call_logs/",
+    "use_relative_output_paths": true,
+    "write_to_cache": true,
+    "read_from_cache": true,
+    "default_runtime_attributes": {
+        "maxRetries": 5
+    }
+}
