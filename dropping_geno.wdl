@@ -13,12 +13,12 @@ workflow remove_genotypes {
                 vcf=vcf, 
                 vcf_name=vcf_name
         }
-	}
+    }
 
     output {
         Array[File] drop_geno_vcf = drop_genotypes.drop_genotypes_output
-		Array[File] drop_geno_vcf_index = drop_genotypes.drop_genotypes_output_index
-	}
+        Array[File] drop_geno_vcf_index = drop_genotypes.drop_genotypes_output_index
+    }
 }
 
 task drop_genotypes {
@@ -30,19 +30,20 @@ task drop_genotypes {
     
 
     runtime {
-
-		docker: "quay.io/lifebitai/bcftools:1.10.2"
+        cpus: 1
+        memory: "10 GB"
+        docker: "quay.io/lifebitai/bcftools"
     }
 
     command {
 
         bcftools view -G -O z -o ${vcf_name}_sites.vcf.gz ${vcf} 
-		bcftools index -t ${vcf_name}_sites.vcf.gz
+        bcftools index -t ${vcf_name}_sites.vcf.gz
     }
 
     output {
         File drop_genotypes_output = "${vcf_name}_sites.vcf.gz"
-		File drop_genotypes_output_index = "${vcf_name}_sites.vcf.gz.tbi"
+        File drop_genotypes_output_index = "${vcf_name}_sites.vcf.gz.tbi"
     }
 }
 
