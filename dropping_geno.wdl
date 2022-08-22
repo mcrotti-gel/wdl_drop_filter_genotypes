@@ -22,6 +22,8 @@ workflow remove_genotypes {
     }
 
     output {
+        Array[File] drop_geno_vcf = drop_genotypes.drop_genotypes_output
+        Array[File] drop_geno_vcf_index = drop_genotypes.drop_genotypes_output_index
         Array[File] minGQ_file = minGQ_filter.minGQ_filter_output
     }
 }
