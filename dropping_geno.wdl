@@ -65,7 +65,7 @@ task minGQ_filter {
     }
 
     command {
-        bcftools query -i 'GQ < 30' -f '[%CHROM\t%POS\t%REF\t%ALT\t%GQ\n]' ${drop_genotypes_output} > ${vcf_name}_minGQ.tsv
+        bcftools query -i 'medianGQ < 80' -f '[%CHROM\t%POS\t%REF\t%ALT\t%medianGQ\n]' ${drop_genotypes_output} > ${vcf_name}_minGQ.tsv
     }
 
     output {
