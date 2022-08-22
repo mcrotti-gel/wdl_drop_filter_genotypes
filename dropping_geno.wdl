@@ -13,11 +13,16 @@ workflow remove_genotypes {
                 vcf=vcf, 
                 vcf_name=vcf_name
         }
+
+        call minGQ_filter {
+            input:
+                drop_genotypes_output=drop_genotypes.drop_genotypes_output,
+                vcf_name=vcf_name
+        }
     }
 
     output {
-        Array[File] drop_geno_vcf = drop_genotypes.drop_genotypes_output
-        Array[File] drop_geno_vcf_index = drop_genotypes.drop_genotypes_output_index
+        Array[File] minGQ_file = minGQ_filter.minGQ_filter_output
     }
 }
 
@@ -28,22 +33,43 @@ task drop_genotypes {
         String vcf_name
     }
     
-
     runtime {
         cpus: 1
-        memory: "10 GB"
+        memory: "2 GB"
         docker: "quay.io/lifebitai/bcftools"
     }
 
     command {
 
         bcftools view -G -O z -o ${vcf_name}_sites.vcf.gz ${vcf} 
-        bcftools index -t ${vcf_name}_sites.vcf.gz
+        bcftools index ${vcf_name}_sites.vcf.gz
     }
 
     output {
         File drop_genotypes_output = "${vcf_name}_sites.vcf.gz"
-        File drop_genotypes_output_index = "${vcf_name}_sites.vcf.gz.tbi"
+        File drop_genotypes_output_index = "${vcf_name}_sites.vcf.gz.csi"
     }
 }
 
+task minGQ_filter {
+
+    input {
+        File drop_genotypes_output
+        String vcf_name
+    }
+
+    runtime {
+        cpus: 1
+        memory: "2 GB"
+        docker: "quay.io/lifebitai/bcftools"
+    }
+
+    command {
+        bcftools query -i 'minGQ < 30' -f '[%CHROM\t%POS\t%REF\t%ALT\t%minGQ\n]' ${drop_genotypes_output} > ${vcf_name}_minGQ.tsv
+    }
+
+    output {
+        File minGQ_filter_output = "${vcf_name}_minGQ.tsv"
+    }
+
+}
