@@ -14,7 +14,7 @@ workflow remove_genotypes {
                 vcf_name=vcf_name
         }
 
-        call minGQ_filter {
+        call medianGQ_filter {
             input:
                 drop_genotypes_output=drop_genotypes.drop_genotypes_output,
                 vcf_name=vcf_name
@@ -22,9 +22,7 @@ workflow remove_genotypes {
     }
 
     output {
-        Array[File] drop_geno_vcf = drop_genotypes.drop_genotypes_output
-        Array[File] drop_geno_vcf_index = drop_genotypes.drop_genotypes_output_index
-        Array[File] minGQ_file = minGQ_filter.minGQ_filter_output
+        Array[File] medianGQ_file = medianGQ_filter.medianGQ_filter_output
     }
 }
 
@@ -36,7 +34,7 @@ task drop_genotypes {
     }
     
     runtime {
-        cpus: 1
+        cpu: 1
         memory: "2 GB"
         docker: "quay.io/lifebitai/bcftools"
     }
@@ -53,7 +51,7 @@ task drop_genotypes {
     }
 }
 
-task minGQ_filter {
+task medianGQ_filter {
 
     input {
         File drop_genotypes_output
@@ -61,17 +59,17 @@ task minGQ_filter {
     }
 
     runtime {
-        cpus: 1
+        cpu: 1
         memory: "2 GB"
         docker: "quay.io/lifebitai/bcftools"
     }
 
     command {
-        bcftools query -i 'medianGQ < 80' -f '[%CHROM\t%POS\t%REF\t%ALT\t%medianGQ\n]' ${drop_genotypes_output} > ${vcf_name}_minGQ.tsv
+        bcftools query -i 'medianGQ > 30' -f '%CHROM\t%POS\t%REF\t%ALT\t%medianGQ\n' ${drop_genotypes_output} > ${vcf_name}_medianGQ.tsv
     }
 
     output {
-        File minGQ_filter_output = "${vcf_name}_minGQ.tsv"
+        File medianGQ_filter_output = "${vcf_name}_medianGQ.tsv"
     }
 
 }
