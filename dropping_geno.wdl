@@ -36,7 +36,7 @@ task drop_genotypes {
     runtime {
         cpu: 1
         memory: "2 GB"
-        docker: "quay.io/lifebitai/bcftools"
+        docker: "704295557583.dkr.ecr.eu-west-2.amazonaws.com/bcftools"
     }
 
     command {
@@ -61,7 +61,7 @@ task medianGQ_filter {
     runtime {
         cpu: 1
         memory: "2 GB"
-        docker: "quay.io/lifebitai/bcftools"
+        docker: "704295557583.dkr.ecr.eu-west-2.amazonaws.com/bcftools"
     }
 
     command {
